@@ -1,5 +1,5 @@
-import SwiftUI
 import CoreData
+import SwiftUI
 
 struct PersonDetailView: View {
     @ObservedObject var person: Person

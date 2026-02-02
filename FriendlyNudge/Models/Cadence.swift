@@ -8,10 +8,10 @@ enum Cadence: String, CaseIterable, Codable {
 
     var displayName: String {
         switch self {
-        case .weekly: return "Weekly"
-        case .monthly: return "Monthly"
-        case .quarterly: return "Quarterly"
-        case .none: return "None"
+        case .weekly: "Weekly"
+        case .monthly: "Monthly"
+        case .quarterly: "Quarterly"
+        case .none: "None"
         }
     }
 }
