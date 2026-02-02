@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: macos-15
 
     steps:
       - name: Checkout
@@ -14,6 +14,9 @@ jobs:
 
       - name: Print Xcode version
         run: xcodebuild -version
+
+      - name: List available simulators
+        run: xcrun simctl list devices available
 
       - name: List schemes
         run: xcodebuild -list -project FriendlyNudge/FriendlyNudge.xcodeproj
@@ -23,7 +26,7 @@ jobs:
           xcodebuild \
             -project FriendlyNudge/FriendlyNudge.xcodeproj \
             -scheme FriendlyNudge \
-            -destination 'platform=iOS Simulator,name=iPhone 15' \
+            -destination 'generic/platform=iOS Simulator' \
             -configuration Debug \
             -sdk iphonesimulator \
             -derivedDataPath DerivedData \
