@@ -4,9 +4,15 @@
 A private, local-only friendship companion. No accounts, no cloud sync, no AI, no social integrations.
 
 ## Current status
-- Milestone: 0 (Setup)
-- Implemented:
-  - (none yet)
+- Milestone: 1 (Scaffold complete)
+- Builds and runs on physical iPhone
+
+### Implemented
+- Xcode project created in-repo (`FriendlyNudge/`)
+- SwiftUI tabs: People, Deck, Settings
+- Core Data stack + `FriendlyNudge.xcdatamodeld` with Person, Tag, InteractionLog entities
+- Placeholder views: PeopleListView, PersonDetailView, DailyDeckView, SettingsView
+- Docs renamed to "Friendly Nudge"
 
 ## Repo rules (must follow)
 - No PII logging. Ever.
@@ -15,28 +21,30 @@ A private, local-only friendship companion. No accounts, no cloud sync, no AI, n
 - Keep logic out of SwiftUI view bodies when possible.
 
 ## Next tickets
-1) Scaffold project structure + Core Data entities
-2) People list CRUD
-3) Person detail edit
-4) Interaction logging
-5) Daily deck selection logic + tests
-6) Local notifications
-7) Privacy controls: app lock + hide notes
-8) Export + delete flows
-9) Contacts import
-10) Accessibility pass
+1) People list CRUD
+2) Person detail edit
+3) Interaction logging
+4) Daily deck selection logic + tests
+5) Local notifications
+6) Privacy controls: app lock + hide notes
+7) Export + delete flows
+8) Contacts import
+9) Accessibility pass
 
 ## File map (update as it grows)
-- App/
-- Features/
-- Services/
-- Persistence/
+- FriendlyNudge/App/
+- FriendlyNudge/Features/
+- FriendlyNudge/Models/
+- FriendlyNudge/Persistence/
 - docs/
 
 ## Known landmines
 - Avoid permission requests at launch. Ask only on user action.
 - Avoid any analytics payloads that include user-entered text.
 - Avoid "tracker" wording in UI and marketing copy.
+
+## Gotchas
+- Device signing requires a valid Apple Development certificate; simulator does not require signing.
 
 ## Open questions
 - MVP deck size default (likely 7).
