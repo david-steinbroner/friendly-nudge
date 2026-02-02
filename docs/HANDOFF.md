@@ -6,6 +6,7 @@ A private, local-only friendship companion. No accounts, no cloud sync, no AI, n
 ## Current status
 - Milestone: 1 (Scaffold complete)
 - Builds and runs on physical iPhone
+- Tracking: Fixes SKU-357 (scaffold complete)
 
 ### Implemented
 - Xcode project created in-repo (`FriendlyNudge/`)
