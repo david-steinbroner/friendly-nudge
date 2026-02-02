@@ -1,6 +1,6 @@
 # Handoff (read this first)
 
-## What Nudge is
+## What Friendly Nudge is
 A private, local-only friendship companion. No accounts, no cloud sync, no AI, no social integrations.
 
 ## Current status
@@ -39,5 +39,4 @@ A private, local-only friendship companion. No accounts, no cloud sync, no AI, n
 - Avoid "tracker" wording in UI and marketing copy.
 
 ## Open questions
-- Final app name (Nudge is working title).
 - MVP deck size default (likely 7).

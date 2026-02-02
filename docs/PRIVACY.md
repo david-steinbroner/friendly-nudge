@@ -1,7 +1,7 @@
 # Privacy posture (MVP)
 
 ## Promise
-Nudge stores your data on your device. No accounts. No cloud sync. No AI. No social integrations.
+Friendly Nudge stores your data on your device. No accounts. No cloud sync. No AI. No social integrations.
 
 ## What we store (on device)
 - Person name, optional photo, optional birthday

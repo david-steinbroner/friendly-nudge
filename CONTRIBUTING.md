@@ -1,4 +1,4 @@
-# Contributing to Nudge
+# Contributing to Friendly Nudge
 
 ## Core rules (non-negotiable)
 1. Local-only MVP: no backend, no accounts, no AI, no social integrations.
