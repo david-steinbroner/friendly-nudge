@@ -22,6 +22,14 @@
 - Comments are for "why" and gotchas, not for narrating code.
 - New feature work should include basic tests for non-trivial logic.
 
+## PR-first workflow (required for Linear automation)
+- Never commit directly to main.
+- Create a branch per Linear issue; branch name must include the issue key (e.g., `SKU-123-feature-slug`).
+- PR title must include the issue key (e.g., `SKU-123 Add feature X`).
+- PR description must start with `Fixes SKU-###` on its own line.
+- Merge the PR to auto-close the Linear ticket.
+- Use `scripts/linear_pr.sh` to scaffold branches and get PR commands.
+
 ## Commit discipline
 - One ticket per PR.
 - One feature per PR.

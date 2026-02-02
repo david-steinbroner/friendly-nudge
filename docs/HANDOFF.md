@@ -21,6 +21,14 @@ A private, local-only friendship companion. No accounts, no cloud sync, no AI, n
 - Small PRs, one ticket per PR.
 - Keep logic out of SwiftUI view bodies when possible.
 
+## PR-first workflow (required for Linear automation)
+- Never commit directly to main.
+- Create a branch per Linear issue; branch name must include the issue key (e.g., `SKU-123-feature-slug`).
+- PR title must include the issue key (e.g., `SKU-123 Add feature X`).
+- PR description must start with `Fixes SKU-###` on its own line.
+- Merge the PR to auto-close the Linear ticket.
+- Use `scripts/linear_pr.sh` to scaffold branches and get PR commands.
+
 ## Next tickets
 1) People list CRUD
 2) Person detail edit
@@ -46,6 +54,7 @@ A private, local-only friendship companion. No accounts, no cloud sync, no AI, n
 
 ## Gotchas
 - Device signing requires a valid Apple Development certificate; simulator does not require signing.
+- Linear auto-close works best via PRs, not direct commits.
 - Integration check: PR linking test.
 
 ## Open questions
