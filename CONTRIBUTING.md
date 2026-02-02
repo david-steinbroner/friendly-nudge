@@ -47,3 +47,4 @@
 - Tests pass (where applicable).
 - Feature matches ticket acceptance criteria.
 - docs/HANDOFF.md updated only if a milestone-level change occurred.
+- PRs must be green (CI build) before merging.
