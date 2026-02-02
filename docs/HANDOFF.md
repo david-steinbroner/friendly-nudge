@@ -56,6 +56,7 @@ A private, local-only friendship companion. No accounts, no cloud sync, no AI, n
 ## Gotchas
 - Device signing requires a valid Apple Development certificate; simulator does not require signing.
 - Integration check: PR linking test.
+- Ruleset validation: build check is required before merging.
 
 ## Open questions
 - MVP deck size default (likely 7).
