@@ -1,5 +1,5 @@
-import SwiftUI
 import CoreData
+import SwiftUI
 
 struct PeopleListView: View {
     @Environment(\.managedObjectContext) private var viewContext

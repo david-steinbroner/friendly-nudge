@@ -22,6 +22,26 @@
 - Comments are for "why" and gotchas, not for narrating code.
 - New feature work should include basic tests for non-trivial logic.
 
+## Formatting + linting
+We use SwiftFormat and SwiftLint. CI enforces both.
+
+**Install tools locally:**
+```bash
+brew install swiftformat swiftlint
+```
+
+**Run lint check:**
+```bash
+./scripts/lint.sh
+```
+
+**Auto-format code:**
+```bash
+./scripts/format.sh
+```
+
+Configuration files: `.swiftformat`, `.swiftlint.yml`
+
 ## PR-first workflow (required for Linear automation)
 - Never commit directly to main.
 - One branch per Linear issue; branch name must include SKU-### (e.g., `SKU-123-feature-slug`).

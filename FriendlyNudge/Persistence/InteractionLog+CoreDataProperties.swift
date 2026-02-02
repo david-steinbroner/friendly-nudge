@@ -1,16 +1,16 @@
-import Foundation
 import CoreData
+import Foundation
 
-extension InteractionLog {
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<InteractionLog> {
-        return NSFetchRequest<InteractionLog>(entityName: "InteractionLog")
+public extension InteractionLog {
+    @nonobjc class func fetchRequest() -> NSFetchRequest<InteractionLog> {
+        NSFetchRequest<InteractionLog>(entityName: "InteractionLog")
     }
 
-    @NSManaged public var id: UUID?
-    @NSManaged public var typeRaw: String?
-    @NSManaged public var date: Date?
-    @NSManaged public var note: String?
-    @NSManaged public var person: Person?
+    @NSManaged var id: UUID?
+    @NSManaged var typeRaw: String?
+    @NSManaged var date: Date?
+    @NSManaged var note: String?
+    @NSManaged var person: Person?
 }
 
 extension InteractionLog: Identifiable {}

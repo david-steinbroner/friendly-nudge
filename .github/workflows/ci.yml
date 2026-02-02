@@ -12,11 +12,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Install SwiftFormat and SwiftLint
+        run: brew install swiftformat swiftlint
+
+      - name: Run SwiftFormat (check)
+        run: swiftformat --lint FriendlyNudge --config .swiftformat
+
+      - name: Run SwiftLint
+        run: swiftlint lint --config .swiftlint.yml --strict
+
       - name: Print Xcode version
         run: xcodebuild -version
-
-      - name: List available simulators
-        run: xcrun simctl list devices available
 
       - name: List schemes
         run: xcodebuild -list -project FriendlyNudge/FriendlyNudge.xcodeproj

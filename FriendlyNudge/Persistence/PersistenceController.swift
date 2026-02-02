@@ -23,7 +23,7 @@ struct PersistenceController {
         container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
     }
 
-    // Preview helper for SwiftUI previews
+    /// Preview helper for SwiftUI previews
     static var preview: PersistenceController = {
         let controller = PersistenceController(inMemory: true)
         let viewContext = controller.container.viewContext

@@ -8,19 +8,19 @@ enum InteractionType: String, CaseIterable, Codable {
 
     var displayName: String {
         switch self {
-        case .texted: return "Texted"
-        case .called: return "Called"
-        case .hungOut: return "Hung Out"
-        case .other: return "Other"
+        case .texted: "Texted"
+        case .called: "Called"
+        case .hungOut: "Hung Out"
+        case .other: "Other"
         }
     }
 
     var iconName: String {
         switch self {
-        case .texted: return "message"
-        case .called: return "phone"
-        case .hungOut: return "person.2"
-        case .other: return "ellipsis.circle"
+        case .texted: "message"
+        case .called: "phone"
+        case .hungOut: "person.2"
+        case .other: "ellipsis.circle"
         }
     }
 }

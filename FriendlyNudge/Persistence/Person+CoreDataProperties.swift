@@ -1,52 +1,54 @@
-import Foundation
 import CoreData
+import Foundation
 
-extension Person {
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<Person> {
-        return NSFetchRequest<Person>(entityName: "Person")
+public extension Person {
+    @nonobjc class func fetchRequest() -> NSFetchRequest<Person> {
+        NSFetchRequest<Person>(entityName: "Person")
     }
 
-    @NSManaged public var id: UUID?
-    @NSManaged public var name: String?
-    @NSManaged public var birthday: Date?
-    @NSManaged public var notes: String?
-    @NSManaged public var cadenceRaw: String?
-    @NSManaged public var lastConnectedDate: Date?
-    @NSManaged public var snoozeUntil: Date?
-    @NSManaged public var createdAt: Date?
-    @NSManaged public var updatedAt: Date?
-    @NSManaged public var interactionLogs: NSSet?
-    @NSManaged public var tags: NSSet?
+    @NSManaged var id: UUID?
+    @NSManaged var name: String?
+    @NSManaged var birthday: Date?
+    @NSManaged var notes: String?
+    @NSManaged var cadenceRaw: String?
+    @NSManaged var lastConnectedDate: Date?
+    @NSManaged var snoozeUntil: Date?
+    @NSManaged var createdAt: Date?
+    @NSManaged var updatedAt: Date?
+    @NSManaged var interactionLogs: NSSet?
+    @NSManaged var tags: NSSet?
 }
 
 // MARK: - Generated accessors for interactionLogs
-extension Person {
+
+public extension Person {
     @objc(addInteractionLogsObject:)
-    @NSManaged public func addToInteractionLogs(_ value: InteractionLog)
+    @NSManaged func addToInteractionLogs(_ value: InteractionLog)
 
     @objc(removeInteractionLogsObject:)
-    @NSManaged public func removeFromInteractionLogs(_ value: InteractionLog)
+    @NSManaged func removeFromInteractionLogs(_ value: InteractionLog)
 
     @objc(addInteractionLogs:)
-    @NSManaged public func addToInteractionLogs(_ values: NSSet)
+    @NSManaged func addToInteractionLogs(_ values: NSSet)
 
     @objc(removeInteractionLogs:)
-    @NSManaged public func removeFromInteractionLogs(_ values: NSSet)
+    @NSManaged func removeFromInteractionLogs(_ values: NSSet)
 }
 
 // MARK: - Generated accessors for tags
-extension Person {
+
+public extension Person {
     @objc(addTagsObject:)
-    @NSManaged public func addToTags(_ value: Tag)
+    @NSManaged func addToTags(_ value: Tag)
 
     @objc(removeTagsObject:)
-    @NSManaged public func removeFromTags(_ value: Tag)
+    @NSManaged func removeFromTags(_ value: Tag)
 
     @objc(addTags:)
-    @NSManaged public func addToTags(_ values: NSSet)
+    @NSManaged func addToTags(_ values: NSSet)
 
     @objc(removeTags:)
-    @NSManaged public func removeFromTags(_ values: NSSet)
+    @NSManaged func removeFromTags(_ values: NSSet)
 }
 
 extension Person: Identifiable {}

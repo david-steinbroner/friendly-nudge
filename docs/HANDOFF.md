@@ -46,7 +46,14 @@ A private, local-only friendship companion. No accounts, no cloud sync, no AI, n
 - FriendlyNudge/Features/
 - FriendlyNudge/Models/
 - FriendlyNudge/Persistence/
+- scripts/
 - docs/
+
+## Formatting + linting
+- SwiftFormat + SwiftLint (config in `.swiftformat`, `.swiftlint.yml`)
+- CI enforces lint checks on all PRs
+- Run locally: `./scripts/lint.sh` (check) or `./scripts/format.sh` (fix)
+- Install: `brew install swiftformat swiftlint`
 
 ## Known landmines
 - Avoid permission requests at launch. Ask only on user action.
