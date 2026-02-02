@@ -1,0 +1,43 @@
+# SwiftFormat configuration for Friendly Nudge
+# Sane defaults - avoid stylistic bikeshedding
+
+--swiftversion 5.9
+
+# Indentation
+--indent 4
+--tabwidth 4
+--smarttabs enabled
+
+# Braces
+--allman false
+
+# Wrapping
+--maxwidth 120
+--wraparguments before-first
+--wrapparameters before-first
+--wrapcollections before-first
+
+# Spacing
+--trimwhitespace always
+--insertlines disabled
+--removelines disabled
+
+# Imports
+--importgrouping testable-last
+
+# Other
+--self remove
+--stripunusedargs closure-only
+--commas always
+--decimalgrouping 3,6
+--exponentcase lowercase
+--fractiongrouping disabled
+--header ignore
+--ifdef no-indent
+--operatorfunc spaced
+--ranges spaced
+--semicolons never
+--voidtype void
+
+# Exclusions
+--exclude Pods,DerivedData,build,.build
