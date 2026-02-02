@@ -42,6 +42,24 @@ brew install swiftformat swiftlint
 
 Configuration files: `.swiftformat`, `.swiftlint.yml`
 
+## Testing
+Unit tests live in `FriendlyNudge/FriendlyNudgeTests/`. CI runs tests automatically on all PRs.
+
+**Run tests locally via Xcode:**
+- Open `FriendlyNudge/FriendlyNudge.xcodeproj`
+- Press Cmd+U or Product → Test
+
+**Run tests via command line:**
+```bash
+xcodebuild test \
+  -project FriendlyNudge/FriendlyNudge.xcodeproj \
+  -scheme FriendlyNudge \
+  -destination 'platform=iOS Simulator,name=iPhone 16' \
+  CODE_SIGNING_ALLOWED=NO
+```
+
+When adding new features with non-trivial logic, include unit tests.
+
 ## PR-first workflow (required for Linear automation)
 - Never commit directly to main.
 - One branch per Linear issue; branch name must include SKU-### (e.g., `SKU-123-feature-slug`).
