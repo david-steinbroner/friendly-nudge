@@ -15,4 +15,9 @@ public class Person: NSManagedObject {
     static func isValidName(_ name: String) -> Bool {
         !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
+
+    var sortedInteractions: [InteractionLog] {
+        let logs = interactionLogs as? Set<InteractionLog> ?? []
+        return logs.sorted { ($0.date ?? .distantPast) > ($1.date ?? .distantPast) }
+    }
 }
