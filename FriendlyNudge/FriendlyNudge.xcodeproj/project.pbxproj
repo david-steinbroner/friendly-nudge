@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		F5TEST0032F30359AA /* FriendlyNudgeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5TEST0022F30359AA /* FriendlyNudgeTests.swift */; };
+		F5SKU3602F3025270025A1F8 /* AddPersonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5SKU3612F3025270025A1F8 /* AddPersonView.swift */; };
 		F5AEF2A22F3025270025A1F8 /* Tag+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AEF29F2F3025270025A1F8 /* Tag+CoreDataProperties.swift */; };
 		F5AEF2A32F3025270025A1F8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AEF28A2F3025270025A1F8 /* ContentView.swift */; };
 		F5AEF2A42F3025270025A1F8 /* InteractionLog+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AEF29A2F3025270025A1F8 /* InteractionLog+CoreDataProperties.swift */; };
@@ -43,6 +44,7 @@
 		F5AEF28A2F3025270025A1F8 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		F5AEF28B2F3025270025A1F8 /* FriendlyNudgeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendlyNudgeApp.swift; sourceTree = "<group>"; };
 		F5AEF28D2F3025270025A1F8 /* DailyDeckView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyDeckView.swift; sourceTree = "<group>"; };
+		F5SKU3612F3025270025A1F8 /* AddPersonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPersonView.swift; sourceTree = "<group>"; };
 		F5AEF28F2F3025270025A1F8 /* PeopleListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleListView.swift; sourceTree = "<group>"; };
 		F5AEF2902F3025270025A1F8 /* PersonDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonDetailView.swift; sourceTree = "<group>"; };
 		F5AEF2922F3025270025A1F8 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -134,6 +136,7 @@
 		F5AEF2912F3025270025A1F8 /* People */ = {
 			isa = PBXGroup;
 			children = (
+				F5SKU3612F3025270025A1F8 /* AddPersonView.swift */,
 				F5AEF28F2F3025270025A1F8 /* PeopleListView.swift */,
 				F5AEF2902F3025270025A1F8 /* PersonDetailView.swift */,
 			);
@@ -289,6 +292,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F5SKU3602F3025270025A1F8 /* AddPersonView.swift in Sources */,
 				F5AEF2A22F3025270025A1F8 /* Tag+CoreDataProperties.swift in Sources */,
 				F5AEF2A32F3025270025A1F8 /* ContentView.swift in Sources */,
 				F5AEF2A42F3025270025A1F8 /* InteractionLog+CoreDataProperties.swift in Sources */,

@@ -10,6 +10,9 @@ struct PeopleListView: View {
     )
     private var people: FetchedResults<Person>
 
+    @State private var showingAddPerson = false
+    @State private var personToDelete: Person?
+
     var body: some View {
         NavigationStack {
             Group {
@@ -22,9 +25,29 @@ struct PeopleListView: View {
             .navigationTitle("People")
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
-                    Button(action: addPerson) {
+                    Button(action: { showingAddPerson = true }) {
                         Label("Add Person", systemImage: "plus")
                     }
+                }
+            }
+            .sheet(isPresented: $showingAddPerson) {
+                AddPersonView()
+            }
+            .alert("Delete Person", isPresented: .init(
+                get: { personToDelete != nil },
+                set: { if !$0 { personToDelete = nil } }
+            )) {
+                Button("Cancel", role: .cancel) {
+                    personToDelete = nil
+                }
+                Button("Delete", role: .destructive) {
+                    if let person = personToDelete {
+                        deletePerson(person)
+                    }
+                }
+            } message: {
+                if let person = personToDelete {
+                    Text("Are you sure you want to delete \(person.name ?? "this person")?")
                 }
             }
         }
@@ -36,7 +59,7 @@ struct PeopleListView: View {
         } description: {
             Text("Add people you want to stay in touch with.")
         } actions: {
-            Button(action: addPerson) {
+            Button(action: { showingAddPerson = true }) {
                 Text("Add Person")
             }
             .buttonStyle(.borderedProminent)
@@ -47,39 +70,41 @@ struct PeopleListView: View {
         List {
             ForEach(people) { person in
                 NavigationLink(destination: PersonDetailView(person: person)) {
-                    Text(person.name ?? "Unknown")
+                    PersonRowView(person: person)
                 }
             }
-            .onDelete(perform: deletePeople)
+            .onDelete(perform: confirmDelete)
         }
     }
 
-    private func addPerson() {
-        withAnimation {
-            let newPerson = Person(context: viewContext)
-            newPerson.id = UUID()
-            newPerson.name = "New Person"
-            newPerson.cadenceRaw = Cadence.none.rawValue
-            newPerson.createdAt = Date()
-            newPerson.updatedAt = Date()
-
-            do {
-                try viewContext.save()
-            } catch {
-                // Handle error appropriately in production
-            }
+    private func confirmDelete(offsets: IndexSet) {
+        if let index = offsets.first {
+            personToDelete = people[index]
         }
     }
 
-    private func deletePeople(offsets: IndexSet) {
+    private func deletePerson(_ person: Person) {
         withAnimation {
-            offsets.map { people[$0] }.forEach(viewContext.delete)
-
+            viewContext.delete(person)
             do {
                 try viewContext.save()
             } catch {
-                // Handle error appropriately in production
+                // Core Data save failed - context will rollback on next fetch
             }
+        }
+        personToDelete = nil
+    }
+}
+
+private struct PersonRowView: View {
+    @ObservedObject var person: Person
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(person.name ?? "Unknown")
+            Text(person.cadence.displayName)
+                .font(.caption)
+                .foregroundStyle(.secondary)
         }
     }
 }
