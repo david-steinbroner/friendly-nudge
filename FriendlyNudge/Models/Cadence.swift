@@ -14,4 +14,13 @@ enum Cadence: String, CaseIterable, Codable {
         case .none: "None"
         }
     }
+
+    var intervalDays: Int? {
+        switch self {
+        case .weekly: 7
+        case .monthly: 30
+        case .quarterly: 90
+        case .none: nil
+        }
+    }
 }
