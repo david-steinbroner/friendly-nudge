@@ -25,7 +25,9 @@ struct PeopleListView: View {
             .navigationTitle("People")
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
-                    Button(action: { showingAddPerson = true }) {
+                    Button {
+                        showingAddPerson = true
+                    } label: {
                         Label("Add Person", systemImage: "plus")
                     }
                 }
@@ -59,8 +61,8 @@ struct PeopleListView: View {
         } description: {
             Text("Add people you want to stay in touch with.")
         } actions: {
-            Button(action: { showingAddPerson = true }) {
-                Text("Add Person")
+            Button("Add Person") {
+                showingAddPerson = true
             }
             .buttonStyle(.borderedProminent)
         }
