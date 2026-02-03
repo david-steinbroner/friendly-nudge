@@ -11,4 +11,8 @@ public class Person: NSManagedObject {
             cadenceRaw = newValue.rawValue
         }
     }
+
+    static func isValidName(_ name: String) -> Bool {
+        !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
 }
