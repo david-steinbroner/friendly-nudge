@@ -45,11 +45,18 @@ Configuration files: `.swiftformat`, `.swiftlint.yml`
 ## Testing
 Unit tests live in `FriendlyNudge/FriendlyNudgeTests/`. CI runs tests automatically on all PRs.
 
-**Run tests locally via Xcode:**
-- Open `FriendlyNudge/FriendlyNudge.xcodeproj`
-- Press Cmd+U or Product → Test
+**Local workflow (default):**
+- Do NOT run `xcodebuild test` locally by default — it's slow and CI handles it.
+- Verify behavior by running the app on a physical iPhone (Cmd+R in Xcode).
+- Run `./scripts/lint.sh` before committing.
+- Open PR once lint passes and device verification is done.
+- Let CI (required check: `build`) run simulator build + unit tests.
 
-**Run tests via command line:**
+**Run tests locally only if:**
+- CI fails and you need to debug locally, OR
+- The user explicitly requests local test runs.
+
+**Command to run tests locally (when needed):**
 ```bash
 xcodebuild test \
   -project FriendlyNudge/FriendlyNudge.xcodeproj \
@@ -80,9 +87,9 @@ When adding new features with non-trivial logic, include unit tests.
   - test: ...
 
 ## Definition of done
-- Builds cleanly.
+- Lint passes (`./scripts/lint.sh`).
 - No PII logging.
-- Tests pass (where applicable).
+- Verified on physical device (Cmd+R).
 - Feature matches ticket acceptance criteria.
 - docs/HANDOFF.md updated only if a milestone-level change occurred.
-- PRs must be green (CI build) before merging.
+- CI build check green (CI runs build + tests on simulator).
