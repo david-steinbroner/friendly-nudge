@@ -43,10 +43,10 @@ final class NotificationService {
     // MARK: - Initialization
 
     init(
-        client: NotificationCenterClient = LiveNotificationCenterClient(),
+        client: NotificationCenterClient? = nil,
         userDefaults: UserDefaults = .standard
     ) {
-        self.client = client
+        self.client = client ?? LiveNotificationCenterClient()
         self.userDefaults = userDefaults
 
         // Load saved preferences
