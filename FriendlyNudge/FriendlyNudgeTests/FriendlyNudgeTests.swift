@@ -739,7 +739,7 @@ final class DeckServiceTests: XCTestCase {
 // MARK: - Notification Scheduler Tests (SKU-364)
 
 final class NotificationSchedulerTests: XCTestCase {
-    private var mockClient: MockNotificationCenterClient!
+    private var mockClient: MockNotificationCenterClient?
 
     override func setUp() {
         super.setUp()
@@ -751,23 +751,28 @@ final class NotificationSchedulerTests: XCTestCase {
         super.tearDown()
     }
 
+    private func client() throws -> MockNotificationCenterClient {
+        try XCTUnwrap(mockClient)
+    }
+
     // MARK: - Scheduling When Enabled + Authorized
 
     func testEnabledAndAuthorizedSchedulesDailyNudge() async throws {
-        mockClient.mockAuthorizationStatus = .authorized
+        let c = try client()
+        c.mockAuthorizationStatus = .authorized
 
         let result = try await NotificationScheduler.sync(
             enabled: true,
             hour: 9,
             minute: 30,
             authorizationStatus: .authorized,
-            client: mockClient
+            client: c
         )
 
         XCTAssertEqual(result, .scheduled(hour: 9, minute: 30))
-        XCTAssertEqual(mockClient.addedRequests.count, 1)
+        XCTAssertEqual(c.addedRequests.count, 1)
 
-        let request = try XCTUnwrap(mockClient.addedRequests.first)
+        let request = try XCTUnwrap(c.addedRequests.first)
         XCTAssertEqual(request.identifier, NotificationIdentifier.dailyNudge)
 
         let trigger = try XCTUnwrap(request.trigger as? UNCalendarNotificationTrigger)
@@ -780,69 +785,74 @@ final class NotificationSchedulerTests: XCTestCase {
     }
 
     func testSchedulingRemovesExistingNotificationsFirst() async throws {
-        mockClient.mockAuthorizationStatus = .authorized
+        let c = try client()
+        c.mockAuthorizationStatus = .authorized
 
         _ = try await NotificationScheduler.sync(
             enabled: true,
             hour: 9,
             minute: 0,
             authorizationStatus: .authorized,
-            client: mockClient
+            client: c
         )
 
-        XCTAssertTrue(mockClient.removedPendingIdentifiers.contains(NotificationIdentifier.dailyNudge))
-        XCTAssertTrue(mockClient.removedDeliveredIdentifiers.contains(NotificationIdentifier.dailyNudge))
+        XCTAssertTrue(c.removedPendingIdentifiers.contains(NotificationIdentifier.dailyNudge))
+        XCTAssertTrue(c.removedDeliveredIdentifiers.contains(NotificationIdentifier.dailyNudge))
     }
 
     // MARK: - Disabled
 
     func testDisabledCancelsNotifications() async throws {
+        let c = try client()
         let result = try await NotificationScheduler.sync(
             enabled: false,
             hour: 9,
             minute: 0,
             authorizationStatus: .authorized,
-            client: mockClient
+            client: c
         )
 
         XCTAssertEqual(result, .disabled)
-        XCTAssertTrue(mockClient.addedRequests.isEmpty)
-        XCTAssertTrue(mockClient.removedPendingIdentifiers.contains(NotificationIdentifier.dailyNudge))
-        XCTAssertTrue(mockClient.removedDeliveredIdentifiers.contains(NotificationIdentifier.dailyNudge))
+        XCTAssertTrue(c.addedRequests.isEmpty)
+        XCTAssertTrue(c.removedPendingIdentifiers.contains(NotificationIdentifier.dailyNudge))
+        XCTAssertTrue(c.removedDeliveredIdentifiers.contains(NotificationIdentifier.dailyNudge))
     }
 
     // MARK: - Not Authorized
 
     func testNotAuthorizedDoesNotSchedule() async throws {
+        let c = try client()
         let result = try await NotificationScheduler.sync(
             enabled: true,
             hour: 9,
             minute: 0,
             authorizationStatus: .denied,
-            client: mockClient
+            client: c
         )
 
         XCTAssertEqual(result, .notAuthorized)
-        XCTAssertTrue(mockClient.addedRequests.isEmpty)
+        XCTAssertTrue(c.addedRequests.isEmpty)
     }
 
     func testNotDeterminedDoesNotSchedule() async throws {
+        let c = try client()
         let result = try await NotificationScheduler.sync(
             enabled: true,
             hour: 9,
             minute: 0,
             authorizationStatus: .notDetermined,
-            client: mockClient
+            client: c
         )
 
         XCTAssertEqual(result, .notAuthorized)
-        XCTAssertTrue(mockClient.addedRequests.isEmpty)
+        XCTAssertTrue(c.addedRequests.isEmpty)
     }
 
     // MARK: - Time Changes
 
     func testChangingTimeReschedulesWithNewTime() async throws {
-        mockClient.mockAuthorizationStatus = .authorized
+        let c = try client()
+        c.mockAuthorizationStatus = .authorized
 
         // Schedule at 9:00
         _ = try await NotificationScheduler.sync(
@@ -850,12 +860,12 @@ final class NotificationSchedulerTests: XCTestCase {
             hour: 9,
             minute: 0,
             authorizationStatus: .authorized,
-            client: mockClient
+            client: c
         )
 
         // Clear tracking
-        mockClient.addedRequests = []
-        mockClient.removedPendingIdentifiers = []
+        c.addedRequests = []
+        c.removedPendingIdentifiers = []
 
         // Reschedule at 14:30
         let result = try await NotificationScheduler.sync(
@@ -863,14 +873,14 @@ final class NotificationSchedulerTests: XCTestCase {
             hour: 14,
             minute: 30,
             authorizationStatus: .authorized,
-            client: mockClient
+            client: c
         )
 
         XCTAssertEqual(result, .scheduled(hour: 14, minute: 30))
-        XCTAssertTrue(mockClient.removedPendingIdentifiers.contains(NotificationIdentifier.dailyNudge))
-        XCTAssertEqual(mockClient.addedRequests.count, 1)
+        XCTAssertTrue(c.removedPendingIdentifiers.contains(NotificationIdentifier.dailyNudge))
+        XCTAssertEqual(c.addedRequests.count, 1)
 
-        let request = try XCTUnwrap(mockClient.addedRequests.first)
+        let request = try XCTUnwrap(c.addedRequests.first)
         let trigger = try XCTUnwrap(request.trigger as? UNCalendarNotificationTrigger)
         XCTAssertEqual(trigger.dateComponents.hour, 14)
         XCTAssertEqual(trigger.dateComponents.minute, 30)
@@ -878,11 +888,12 @@ final class NotificationSchedulerTests: XCTestCase {
 
     // MARK: - Cancel
 
-    func testCancelRemovesPendingAndDelivered() {
-        NotificationScheduler.cancel(client: mockClient)
+    func testCancelRemovesPendingAndDelivered() throws {
+        let c = try client()
+        NotificationScheduler.cancel(client: c)
 
-        XCTAssertTrue(mockClient.removedPendingIdentifiers.contains(NotificationIdentifier.dailyNudge))
-        XCTAssertTrue(mockClient.removedDeliveredIdentifiers.contains(NotificationIdentifier.dailyNudge))
+        XCTAssertTrue(c.removedPendingIdentifiers.contains(NotificationIdentifier.dailyNudge))
+        XCTAssertTrue(c.removedDeliveredIdentifiers.contains(NotificationIdentifier.dailyNudge))
     }
 
     // MARK: - Trigger Components
