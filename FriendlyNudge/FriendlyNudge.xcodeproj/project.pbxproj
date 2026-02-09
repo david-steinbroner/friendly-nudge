@@ -18,6 +18,7 @@
 		F5AEF2A62F3025270025A1F8 /* FriendlyNudgeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AEF28B2F3025270025A1F8 /* FriendlyNudgeApp.swift */; };
 		F5AEF2A72F3025270025A1F8 /* InteractionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AEF2962F3025270025A1F8 /* InteractionType.swift */; };
 		F5AEF2A82F3025270025A1F8 /* DailyDeckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AEF28D2F3025270025A1F8 /* DailyDeckView.swift */; };
+		F5SKU3662F3025270025A1F8 /* DeckService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5SKU3672F3025270025A1F8 /* DeckService.swift */; };
 		F5AEF2A92F3025270025A1F8 /* PeopleListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AEF28F2F3025270025A1F8 /* PeopleListView.swift */; };
 		F5AEF2AA2F3025270025A1F8 /* Person+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AEF29C2F3025270025A1F8 /* Person+CoreDataClass.swift */; };
 		F5AEF2AB2F3025270025A1F8 /* InteractionLog+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AEF2992F3025270025A1F8 /* InteractionLog+CoreDataClass.swift */; };
@@ -46,6 +47,7 @@
 		F5AEF28A2F3025270025A1F8 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		F5AEF28B2F3025270025A1F8 /* FriendlyNudgeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendlyNudgeApp.swift; sourceTree = "<group>"; };
 		F5AEF28D2F3025270025A1F8 /* DailyDeckView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyDeckView.swift; sourceTree = "<group>"; };
+		F5SKU3672F3025270025A1F8 /* DeckService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeckService.swift; sourceTree = "<group>"; };
 		F5SKU3612F3025270025A1F8 /* AddPersonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPersonView.swift; sourceTree = "<group>"; };
 		F5SKU3632F3025270025A1F8 /* EditPersonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPersonView.swift; sourceTree = "<group>"; };
 		F5SKU3652F3025270025A1F8 /* LogInteractionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInteractionView.swift; sourceTree = "<group>"; };
@@ -133,6 +135,7 @@
 			isa = PBXGroup;
 			children = (
 				F5AEF28D2F3025270025A1F8 /* DailyDeckView.swift */,
+				F5SKU3672F3025270025A1F8 /* DeckService.swift */,
 			);
 			path = Deck;
 			sourceTree = "<group>";
@@ -308,6 +311,7 @@
 				F5AEF2A62F3025270025A1F8 /* FriendlyNudgeApp.swift in Sources */,
 				F5AEF2A72F3025270025A1F8 /* InteractionType.swift in Sources */,
 				F5AEF2A82F3025270025A1F8 /* DailyDeckView.swift in Sources */,
+				F5SKU3662F3025270025A1F8 /* DeckService.swift in Sources */,
 				F5AEF2A92F3025270025A1F8 /* PeopleListView.swift in Sources */,
 				F5AEF2AA2F3025270025A1F8 /* Person+CoreDataClass.swift in Sources */,
 				F5AEF2AB2F3025270025A1F8 /* InteractionLog+CoreDataClass.swift in Sources */,
