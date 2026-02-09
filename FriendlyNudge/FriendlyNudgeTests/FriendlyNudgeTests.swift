@@ -911,3 +911,439 @@ final class NotificationSchedulerTests: XCTestCase {
         XCTAssertEqual(NotificationIdentifier.dailyNudge, "dailyNudge")
     }
 }
+
+// MARK: - Export Service Tests (SKU-365)
+
+final class ExportServiceTests: XCTestCase {
+    private var context: NSManagedObjectContext?
+    private var userDefaults: UserDefaults?
+
+    /// Fixed export date for determinism
+    private let fixedDate = ISO8601DateFormatter().date(from: "2025-06-15T12:00:00Z")!
+
+    override func setUp() {
+        super.setUp()
+        let controller = PersistenceController(inMemory: true)
+        context = controller.container.viewContext
+
+        // Create isolated UserDefaults for testing
+        userDefaults = UserDefaults(suiteName: "TestExportService")
+        userDefaults?.removePersistentDomain(forName: "TestExportService")
+    }
+
+    override func tearDown() {
+        context = nil
+        userDefaults?.removePersistentDomain(forName: "TestExportService")
+        userDefaults = nil
+        super.tearDown()
+    }
+
+    // MARK: - Helpers
+
+    private func ctx() throws -> NSManagedObjectContext {
+        try XCTUnwrap(context)
+    }
+
+    private func defaults() throws -> UserDefaults {
+        try XCTUnwrap(userDefaults)
+    }
+
+    @discardableResult
+    private func makePerson(
+        id: UUID = UUID(),
+        name: String,
+        cadence: Cadence = .monthly,
+        birthday: Date? = nil,
+        notes: String? = nil,
+        lastConnected: Date? = nil,
+        snoozeUntil: Date? = nil,
+        createdAt: Date? = nil
+    ) throws -> Person {
+        let c = try ctx()
+        let person = Person(context: c)
+        person.id = id
+        person.name = name
+        person.cadenceRaw = cadence.rawValue
+        person.birthday = birthday
+        person.notes = notes
+        person.lastConnectedDate = lastConnected
+        person.snoozeUntil = snoozeUntil
+        person.createdAt = createdAt ?? fixedDate
+        person.updatedAt = createdAt ?? fixedDate
+        return person
+    }
+
+    @discardableResult
+    private func makeTag(id: UUID = UUID(), name: String) throws -> Tag {
+        let c = try ctx()
+        let tag = Tag(context: c)
+        tag.id = id
+        tag.name = name
+        return tag
+    }
+
+    @discardableResult
+    private func makeInteraction(
+        id: UUID = UUID(),
+        person: Person,
+        type: InteractionType = .texted,
+        date: Date? = nil,
+        note: String? = nil
+    ) throws -> InteractionLog {
+        let c = try ctx()
+        let log = InteractionLog(context: c)
+        log.id = id
+        log.interactionType = type
+        log.date = date ?? fixedDate
+        log.note = note
+        log.person = person
+        return log
+    }
+
+    // MARK: - Schema Version
+
+    func testExportEnvelopeHasSchemaVersion() throws {
+        let c = try ctx()
+        let d = try defaults()
+
+        let envelope = ExportService.buildEnvelope(
+            context: c,
+            userDefaults: d,
+            dateProvider: { self.fixedDate }
+        )
+
+        XCTAssertEqual(envelope.schemaVersion, 1)
+    }
+
+    // MARK: - Metadata
+
+    func testExportEnvelopeContainsMetadata() throws {
+        let c = try ctx()
+        let d = try defaults()
+
+        let envelope = ExportService.buildEnvelope(
+            context: c,
+            userDefaults: d,
+            dateProvider: { self.fixedDate }
+        )
+
+        XCTAssertFalse(envelope.exportedAt.isEmpty)
+        XCTAssertFalse(envelope.appVersion.isEmpty)
+        XCTAssertFalse(envelope.appBuild.isEmpty)
+    }
+
+    // MARK: - Empty Data
+
+    func testExportWithNoDataProducesEmptyArrays() throws {
+        let c = try ctx()
+        let d = try defaults()
+
+        let envelope = ExportService.buildEnvelope(
+            context: c,
+            userDefaults: d,
+            dateProvider: { self.fixedDate }
+        )
+
+        XCTAssertTrue(envelope.data.people.isEmpty)
+        XCTAssertTrue(envelope.data.tags.isEmpty)
+        XCTAssertTrue(envelope.data.interactionLogs.isEmpty)
+    }
+
+    // MARK: - Person Export
+
+    func testExportPersonMapsAllFields() throws {
+        let c = try ctx()
+        let d = try defaults()
+
+        let personID = UUID()
+        let birthday = fixedDate.addingTimeInterval(-86400 * 365 * 30)
+        try makePerson(
+            id: personID,
+            name: "Alice",
+            cadence: .weekly,
+            birthday: birthday,
+            notes: "Best friend",
+            lastConnected: fixedDate.addingTimeInterval(-86400),
+            snoozeUntil: fixedDate.addingTimeInterval(86400 * 3)
+        )
+        try c.save()
+
+        let envelope = ExportService.buildEnvelope(
+            context: c,
+            userDefaults: d,
+            dateProvider: { self.fixedDate }
+        )
+
+        XCTAssertEqual(envelope.data.people.count, 1)
+        let exported = try XCTUnwrap(envelope.data.people.first)
+        XCTAssertEqual(exported.id, personID.uuidString)
+        XCTAssertEqual(exported.name, "Alice")
+        XCTAssertEqual(exported.cadence, "weekly")
+        XCTAssertEqual(exported.notes, "Best friend")
+        XCTAssertNotNil(exported.birthday)
+        XCTAssertNotNil(exported.lastConnectedDate)
+        XCTAssertNotNil(exported.snoozeUntil)
+    }
+
+    // MARK: - Tag Export
+
+    func testExportTagMapsAllFields() throws {
+        let c = try ctx()
+        let d = try defaults()
+
+        let tagID = UUID()
+        try makeTag(id: tagID, name: "Family")
+        try c.save()
+
+        let envelope = ExportService.buildEnvelope(
+            context: c,
+            userDefaults: d,
+            dateProvider: { self.fixedDate }
+        )
+
+        XCTAssertEqual(envelope.data.tags.count, 1)
+        let exported = try XCTUnwrap(envelope.data.tags.first)
+        XCTAssertEqual(exported.id, tagID.uuidString)
+        XCTAssertEqual(exported.name, "Family")
+    }
+
+    // MARK: - Interaction Log Export
+
+    func testExportInteractionLogMapsAllFields() throws {
+        let c = try ctx()
+        let d = try defaults()
+
+        let person = try makePerson(name: "Bob")
+        let logID = UUID()
+        try makeInteraction(id: logID, person: person, type: .called, note: "Birthday call")
+        try c.save()
+
+        let envelope = ExportService.buildEnvelope(
+            context: c,
+            userDefaults: d,
+            dateProvider: { self.fixedDate }
+        )
+
+        XCTAssertEqual(envelope.data.interactionLogs.count, 1)
+        let exported = try XCTUnwrap(envelope.data.interactionLogs.first)
+        XCTAssertEqual(exported.id, logID.uuidString)
+        XCTAssertEqual(exported.personID, person.id?.uuidString)
+        XCTAssertEqual(exported.type, "called")
+        XCTAssertEqual(exported.note, "Birthday call")
+    }
+
+    // MARK: - Person-Tag Relationship
+
+    func testExportPersonIncludesTagIDs() throws {
+        let c = try ctx()
+        let d = try defaults()
+
+        let tag1 = try makeTag(name: "Friends")
+        let tag2 = try makeTag(name: "Work")
+        let person = try makePerson(name: "Carol")
+        person.addToTags(tag1)
+        person.addToTags(tag2)
+        try c.save()
+
+        let envelope = ExportService.buildEnvelope(
+            context: c,
+            userDefaults: d,
+            dateProvider: { self.fixedDate }
+        )
+
+        let exported = try XCTUnwrap(envelope.data.people.first)
+        XCTAssertEqual(exported.tagIDs.count, 2)
+        XCTAssertTrue(try exported.tagIDs.contains(XCTUnwrap(tag1.id?.uuidString)))
+        XCTAssertTrue(try exported.tagIDs.contains(XCTUnwrap(tag2.id?.uuidString)))
+    }
+
+    // MARK: - Deterministic Ordering
+
+    func testPeopleExportedInDeterministicOrder() throws {
+        let c = try ctx()
+        let d = try defaults()
+
+        // Create in reverse order but with earlier createdAt
+        let date1 = fixedDate.addingTimeInterval(-1000)
+        let date2 = fixedDate.addingTimeInterval(-500)
+        let date3 = fixedDate
+
+        try makePerson(name: "Zara", createdAt: date1)
+        try makePerson(name: "Alice", createdAt: date3)
+        try makePerson(name: "Mike", createdAt: date2)
+        try c.save()
+
+        let envelope = ExportService.buildEnvelope(
+            context: c,
+            userDefaults: d,
+            dateProvider: { self.fixedDate }
+        )
+
+        let names = envelope.data.people.map(\.name)
+        XCTAssertEqual(names, ["Zara", "Mike", "Alice"])
+    }
+
+    func testTagsExportedInAlphabeticalOrder() throws {
+        let c = try ctx()
+        let d = try defaults()
+
+        try makeTag(name: "Work")
+        try makeTag(name: "Family")
+        try makeTag(name: "Friends")
+        try c.save()
+
+        let envelope = ExportService.buildEnvelope(
+            context: c,
+            userDefaults: d,
+            dateProvider: { self.fixedDate }
+        )
+
+        let names = envelope.data.tags.map(\.name)
+        XCTAssertEqual(names, ["Family", "Friends", "Work"])
+    }
+
+    func testInteractionLogsExportedInChronologicalOrder() throws {
+        let c = try ctx()
+        let d = try defaults()
+
+        let person = try makePerson(name: "Test")
+        try makeInteraction(person: person, type: .texted, date: fixedDate)
+        try makeInteraction(person: person, type: .called, date: fixedDate.addingTimeInterval(-1000))
+        try makeInteraction(person: person, type: .hungOut, date: fixedDate.addingTimeInterval(-500))
+        try c.save()
+
+        let envelope = ExportService.buildEnvelope(
+            context: c,
+            userDefaults: d,
+            dateProvider: { self.fixedDate }
+        )
+
+        let types = envelope.data.interactionLogs.map(\.type)
+        XCTAssertEqual(types, ["called", "hungOut", "texted"])
+    }
+
+    // MARK: - Settings Export
+
+    func testExportSettingsIncludesAllowlistedKeys() throws {
+        let c = try ctx()
+        let d = try defaults()
+
+        d.set(true, forKey: "dailyReminderEnabled")
+        d.set(14, forKey: "reminderHour")
+        d.set(30, forKey: "reminderMinute")
+
+        let envelope = ExportService.buildEnvelope(
+            context: c,
+            userDefaults: d,
+            dateProvider: { self.fixedDate }
+        )
+
+        XCTAssertTrue(envelope.data.settings.dailyReminderEnabled)
+        XCTAssertEqual(envelope.data.settings.reminderHour, 14)
+        XCTAssertEqual(envelope.data.settings.reminderMinute, 30)
+    }
+
+    func testExportSettingsUsesDefaultsWhenNotSet() throws {
+        let c = try ctx()
+        let d = try defaults()
+
+        let envelope = ExportService.buildEnvelope(
+            context: c,
+            userDefaults: d,
+            dateProvider: { self.fixedDate }
+        )
+
+        XCTAssertFalse(envelope.data.settings.dailyReminderEnabled)
+        XCTAssertEqual(envelope.data.settings.reminderHour, 9)
+        XCTAssertEqual(envelope.data.settings.reminderMinute, 0)
+    }
+
+    // MARK: - File Output
+
+    func testExportWritesValidJSONFile() throws {
+        let c = try ctx()
+        let d = try defaults()
+
+        try makePerson(name: "Test Person")
+        try c.save()
+
+        let result = ExportService.exportAllData(
+            context: c,
+            userDefaults: d,
+            dateProvider: { self.fixedDate }
+        )
+
+        guard case let .success(url) = result else {
+            XCTFail("Export should succeed")
+            return
+        }
+
+        XCTAssertTrue(url.lastPathComponent.hasPrefix("friendly-nudge-export-"))
+        XCTAssertTrue(url.lastPathComponent.hasSuffix(".json"))
+
+        let data = try Data(contentsOf: url)
+        let decoded = try JSONDecoder().decode(ExportEnvelope.self, from: data)
+        XCTAssertEqual(decoded.schemaVersion, 1)
+        XCTAssertEqual(decoded.data.people.count, 1)
+
+        // Cleanup
+        try? FileManager.default.removeItem(at: url)
+    }
+
+    func testExportFileNameContainsTimestamp() throws {
+        let c = try ctx()
+        let d = try defaults()
+
+        let result = ExportService.exportAllData(
+            context: c,
+            userDefaults: d,
+            dateProvider: { self.fixedDate }
+        )
+
+        guard case let .success(url) = result else {
+            XCTFail("Export should succeed")
+            return
+        }
+
+        // Filename should contain date in YYYYMMDD-HHMMSS format
+        let filename = url.lastPathComponent
+        XCTAssertTrue(filename.contains("20250615"), "Filename should contain date: \(filename)")
+
+        // Cleanup
+        try? FileManager.default.removeItem(at: url)
+    }
+
+    // MARK: - JSON Format
+
+    func testExportJSONIsPrettyPrintedAndSortedKeys() throws {
+        let c = try ctx()
+        let d = try defaults()
+
+        try makePerson(name: "Alice")
+        try c.save()
+
+        let result = ExportService.exportAllData(
+            context: c,
+            userDefaults: d,
+            dateProvider: { self.fixedDate }
+        )
+
+        guard case let .success(url) = result else {
+            XCTFail("Export should succeed")
+            return
+        }
+
+        let jsonString = try String(contentsOf: url, encoding: .utf8)
+
+        // Pretty printed JSON contains newlines
+        XCTAssertTrue(jsonString.contains("\n"))
+
+        // Sorted keys means "appBuild" comes before "appVersion"
+        let appBuildIndex = try XCTUnwrap(jsonString.range(of: "appBuild")?.lowerBound)
+        let appVersionIndex = try XCTUnwrap(jsonString.range(of: "appVersion")?.lowerBound)
+        XCTAssertTrue(appBuildIndex < appVersionIndex)
+
+        // Cleanup
+        try? FileManager.default.removeItem(at: url)
+    }
+}

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		F5TEST0032F30359AA /* FriendlyNudgeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5TEST0022F30359AA /* FriendlyNudgeTests.swift */; };
+		F5SKU3652F3025270025A1F0 /* ExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5SKU3652F3025270025A1F1 /* ExportService.swift */; };
 		F5SKU3642F3025270025A1F9 /* NotificationCenterClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5SKU3642F3025270025A1FA /* NotificationCenterClient.swift */; };
 		F5SKU3642F3025270025A1FB /* NotificationScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5SKU3642F3025270025A1FC /* NotificationScheduler.swift */; };
 		F5SKU3642F3025270025A1FD /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5SKU3642F3025270025A1FE /* NotificationService.swift */; };
@@ -46,6 +47,7 @@
 /* Begin PBXFileReference section */
 		F5TEST0012F30359AA /* FriendlyNudgeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FriendlyNudgeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5TEST0022F30359AA /* FriendlyNudgeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendlyNudgeTests.swift; sourceTree = "<group>"; };
+		F5SKU3652F3025270025A1F1 /* ExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportService.swift; sourceTree = "<group>"; };
 		F5SKU3642F3025270025A1FA /* NotificationCenterClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCenterClient.swift; sourceTree = "<group>"; };
 		F5SKU3642F3025270025A1FC /* NotificationScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationScheduler.swift; sourceTree = "<group>"; };
 		F5SKU3642F3025270025A1FE /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
@@ -204,6 +206,7 @@
 		F5SKU3642F3025270025A1FF /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				F5SKU3652F3025270025A1F1 /* ExportService.swift */,
 				F5SKU3642F3025270025A1FA /* NotificationCenterClient.swift */,
 				F5SKU3642F3025270025A1FC /* NotificationScheduler.swift */,
 				F5SKU3642F3025270025A1FE /* NotificationService.swift */,
@@ -337,6 +340,7 @@
 				F5AEF2AF2F3025270025A1F8 /* Person+CoreDataProperties.swift in Sources */,
 				F5AEF2B02F3025270025A1F8 /* Tag+CoreDataClass.swift in Sources */,
 				F5AEF2B12F3025270025A1F8 /* PersistenceController.swift in Sources */,
+				F5SKU3652F3025270025A1F0 /* ExportService.swift in Sources */,
 				F5SKU3642F3025270025A1F9 /* NotificationCenterClient.swift in Sources */,
 				F5SKU3642F3025270025A1FB /* NotificationScheduler.swift in Sources */,
 				F5SKU3642F3025270025A1FD /* NotificationService.swift in Sources */,
