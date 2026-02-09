@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct ContentView: View {
+    @Bindable var notificationService: NotificationService
+
     var body: some View {
         TabView {
             PeopleListView()
@@ -13,7 +15,7 @@ struct ContentView: View {
                     Label("Deck", systemImage: "rectangle.stack")
                 }
 
-            SettingsView()
+            SettingsView(notificationService: notificationService)
                 .tabItem {
                     Label("Settings", systemImage: "gear")
                 }
@@ -22,5 +24,5 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+    ContentView(notificationService: NotificationService())
 }
