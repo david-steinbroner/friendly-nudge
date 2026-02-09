@@ -14,6 +14,7 @@ protocol NotificationCenterClient: Sendable {
 struct LiveNotificationCenterClient: NotificationCenterClient {
     private let center: UNUserNotificationCenter
 
+    @MainActor
     init(center: UNUserNotificationCenter = .current()) {
         self.center = center
     }
