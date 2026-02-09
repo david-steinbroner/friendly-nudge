@@ -1,10 +1,17 @@
+import CoreData
 import SwiftUI
 
 struct SettingsView: View {
+    @Environment(\.managedObjectContext) private var viewContext
+
     @State private var appLockEnabled = false
     @State private var hideNotesEnabled = false
-    @State private var showingExportConfirmation = false
     @State private var showingDeleteConfirmation = false
+
+    // Export state
+    @State private var isExporting = false
+    @State private var exportFileURL: URL?
+    @State private var exportError: String?
 
     @Bindable var notificationService: NotificationService
 
@@ -19,9 +26,18 @@ struct SettingsView: View {
                 }
 
                 Section("Data") {
-                    Button("Export Data") {
-                        showingExportConfirmation = true
+                    Button {
+                        performExport()
+                    } label: {
+                        HStack {
+                            Text("Export All Data")
+                            Spacer()
+                            if isExporting {
+                                ProgressView()
+                            }
+                        }
                     }
+                    .disabled(isExporting)
 
                     Button("Delete All Data", role: .destructive) {
                         showingDeleteConfirmation = true
@@ -41,13 +57,15 @@ struct SettingsView: View {
             .task {
                 await notificationService.refreshAuthorizationStatus()
             }
-            .alert("Export Data", isPresented: $showingExportConfirmation) {
-                Button("Cancel", role: .cancel) {}
-                Button("Export") {
-                    // Export functionality coming soon
+            .sheet(item: $exportFileURL) { url in
+                ShareSheet(activityItems: [url])
+            }
+            .alert("Export Failed", isPresented: .constant(exportError != nil)) {
+                Button("OK") {
+                    exportError = nil
                 }
             } message: {
-                Text("Export functionality coming soon.")
+                Text(exportError ?? "An unknown error occurred.")
             }
             .alert("Delete All Data", isPresented: $showingDeleteConfirmation) {
                 Button("Cancel", role: .cancel) {}
@@ -110,8 +128,50 @@ struct SettingsView: View {
             }
         }
     }
+
+    // MARK: - Export
+
+    private func performExport() {
+        isExporting = true
+        exportError = nil
+
+        // Run on background queue to avoid blocking UI
+        DispatchQueue.global(qos: .userInitiated).async {
+            let result = ExportService.exportAllData(context: viewContext)
+
+            DispatchQueue.main.async {
+                isExporting = false
+
+                switch result {
+                case let .success(url):
+                    exportFileURL = url
+                case let .failure(error):
+                    exportError = error.localizedDescription
+                }
+            }
+        }
+    }
+}
+
+// MARK: - Share Sheet
+
+extension URL: @retroactive Identifiable {
+    public var id: String {
+        absoluteString
+    }
+}
+
+struct ShareSheet: UIViewControllerRepresentable {
+    let activityItems: [Any]
+
+    func makeUIViewController(context _: Context) -> UIActivityViewController {
+        UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
+    }
+
+    func updateUIViewController(_: UIActivityViewController, context _: Context) {}
 }
 
 #Preview {
     SettingsView(notificationService: NotificationService())
+        .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 }
