@@ -919,7 +919,9 @@ final class ExportServiceTests: XCTestCase {
     private var userDefaults: UserDefaults?
 
     /// Fixed export date for determinism
-    private let fixedDate = ISO8601DateFormatter().date(from: "2025-06-15T12:00:00Z")!
+    private var fixedDate: Date {
+        ISO8601DateFormatter().date(from: "2025-06-15T12:00:00Z") ?? Date(timeIntervalSinceReferenceDate: 766_756_800)
+    }
 
     override func setUp() {
         super.setUp()
