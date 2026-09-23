@@ -1,6 +1,6 @@
 # Handoff (read this first)
 
-**README copy checkpoint (2026-09-23):** Prepared a plain-language project introduction on `docs/public-profile-copy`, based on the public default branch. Markdown, local links, and copy checks passed. No application or hardware changes; no runtime tests claimed. README publication approved on 2026-09-23. Earlier product and testing notes below are unchanged historical context.
+**README copy checkpoint (2026-09-23):** Prepared a plain-language project introduction on `docs/public-profile-copy`, based on the public default branch. Markdown, local links, and copy checks passed. Two existing inline if statements were expanded to satisfy SwiftFormat after CI flagged six lines; no behavior change. The local SwiftFormat check passes. Required CI must pass before the README PR is merged. README publication approved on 2026-09-23. Earlier product and testing notes below are unchanged historical context.
 
 ## What Friendly Nudge is
 A private, local-only friendship companion. No accounts, no cloud sync, no AI, no social integrations.

@@ -37,7 +37,11 @@ struct PeopleListView: View {
             }
             .alert("Delete Person", isPresented: .init(
                 get: { personToDelete != nil },
-                set: { if !$0 { personToDelete = nil } }
+                set: {
+                    if !$0 {
+                        personToDelete = nil
+                    }
+                }
             )) {
                 Button("Cancel", role: .cancel) {
                     personToDelete = nil

@@ -81,7 +81,11 @@ struct PersonDetailView: View {
         }
         .alert("Delete Interaction", isPresented: .init(
             get: { interactionToDelete != nil },
-            set: { if !$0 { interactionToDelete = nil } }
+            set: {
+                if !$0 {
+                    interactionToDelete = nil
+                }
+            }
         )) {
             Button("Cancel", role: .cancel) {
                 interactionToDelete = nil
